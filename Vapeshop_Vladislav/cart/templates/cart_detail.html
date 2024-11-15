@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<div class="cart-cart">
+  <p style="position:absolute; left: 20px; top: 90px; font-family: Gill Sans, sans-serif; background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 5px 10px; font-size: 30px">Корзина</p>
+  <a href="{% url 'cart:cart_clear' %}" style="position: absolute;top: 90px; left: 50%; background-color: rgba(255, 255, 255, 0.8); z-index: 2; text-decoration: none; font-family: Comic Sans MS, cursive; color: black; border: 1px solid rgba(64, 61, 61, 0.5); padding: 5px; border-radius: 10px"><img src="{% static 'icon/delete.png' %}" style="width: 40px; height: 40px">Очистить корзину</a>
+  <table class="cart-table" id="cart-table">
+    <tbody>
+    {% for item in cart %}
+      {% with product=item.product %}
+        <tr>
+          <td>
+            <a href="{% url 'goods:goods_detail' product.pk product.category %}">
+              <img class="cart-img" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'icon/no_image.png' %}{% endif %}">
+            </a>
+          </td>
+          <td class="cart-name">{{ product.line }}-{{ product.taste }} ({{ product.stronghold }})</td>
+          <td>
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" style="display: flex; justify-content: center">
+              {% csrf_token %}
+              <div class="number-input">
+                <button type="button" class="decrement" title="Уменьшить">-</button>
+                {{ item.update_quantity_form.quantity }}
+                {{ item.update_quantity_form.update }}
+                <button type="button" class="increment" title="Увеличить">+</button>
+              </div>
+              <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: 30px; margin: 0 0 0 15px; width: 50px; height: 50px;" title="Обновить количество в корзине">&#8635;</button>
+            </form>
+          </td>
+          <td><a href="{% url 'cart:cart_remove' product.id %}"><img src="{% static 'icon/delete.png' %}" style="width: 40px; height: 40px"></a> </td>
+          <td class="card-quantity">{{ item.quantity }}</td>
+          <td class="num">{{ item.price }} BYN</td>
+          <td class="num">{{item.total_price }} BYN</td>
+        </tr>
+      {% endwith %}
+    {% endfor %}
+    </tbody>
+
+  </table>
+<aside class="total-cart">
+  <p style="font-family: OCR A Std, monospace; font-size: 20px">Ваша корзина:</p>
+  <p style="padding: 0 10px">Всего товаров: {{cart.get_len}}</p>
+  <p style="padding: 0 10px">Общая стоймость корзины: {{ cart.get_total_price }}</p>
+  <p style="text-align: center; color: #606060">Все скидки и акции предоставляются менеджером после оформления заказа</p>
+  <form  method="post" action="{% url 'order:checkout'%}" class="order-form">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" style="margin: 0 50px">Оформить заказ</button>
+  </form>
+  <a href=" {% url 'goods:goods_list' %}" class="btn btn-primary" style="padding: 5px 10px">Продолжить покупки</a>
+</aside>
+</div>
+{% endblock %}

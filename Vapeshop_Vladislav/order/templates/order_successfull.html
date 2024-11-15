@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<div class="order-successfull">
+    <p class="order-fax">Перешлите номер заказа или скриншот менеджеру для подтверждения заказ</p>
+    <p class="order-number">Заказ успешно создан #{{order.order_number}}</p>
+    {% for order_item in order_items %}
+        {% if order_item.order == order %}
+            <p class="order-product">{{order_item.product.line}}-{{order_item.product.taste}}({{order_item.product.stronghold}}) - {{order_item.quantity}} Шт.</p>
+        {% endif %}
+    {% endfor %}
+    <p class="order-price">Общая стоймость заказа - {{ order.total_price }} BYN</p>
+    <a href=" {% url 'goods:goods_list' %}" class="btn btn-primary" style="padding: 5px 10px">Продолжить покупки</a>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<form action="{% url 'goods:goods_search' %}" style="display: flex; justify-content: center; padding: 10px">
+    <input placeholder="Поиск" name="search" class="search" style="width: 600px">
+    <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
+</form>
+<div class="detail">
+    <div class="detail-1">
+        <p class="detail-name">{{good.line}} - {{good.taste}} ({{good.stronghold}})</p>
+        <img class="detail-img" src="{{ good.image.url }}">
+        <p class="detail-price">Цена</p>
+        <p class="detail-price-value">{{good.price}} BYN</p>
+        {% if good.quantity > 0 %}
+        <form action="{% url 'cart:cart_add' good.id%}" method="post">
+            <div class="form-group">
+                {% csrf_token %}
+                <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
+                <button type="submit" style="outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 15px " ><img class="in-cart" src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"> В коризну</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+    <div class="detail-2">
+        <p class="detail-category">Категория:</p>
+        <p class="detail-category-name">{{good.category}}</p>
+        <p class="detail-category">О товаре:</p>
+        <p class="detail-category-name">{{good.description}}</p>
+        {% if good.quantity > 0 %}
+        <p class="detail-existence">&#10004; В наличии</p>
+        {% else %}
+            <p class="detail-existence">&#10008; Нет в наличии</p>
+        {% endif %}
+    </div>
+</div>
+<div class="category">
+    <p style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 5px; font-family: Gill Sans, sans-serif; font-size: 27px">Похожие товары:</p>
+</div>
+<div class="catalog" id="List_line">
+    {% for line in lines %}
+    {% for good_ in goods %}
+    {% if good_.line == line %}
+    <div class="line">
+        <li style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 5px; font-family: Gill Sans, sans-serif;">{{line}}:</li>
+    </div>
+    <div class="product" >
+        <div class="item">
+            <a href="{% url 'goods:goods_detail' good_.pk good_.category%}" class="card-body" style="text-decoration: none;">
+                <img class="card-img-top" src="{{ good_.image.url }}" style="margin:auto;height:100px;width:100px">
+                <p class="card-title">{{ good_.line }}-{{ good_.taste }} ({{good_.stronghold}})</p>
+            </a>
+        </div>
+        {% if good_.quantity > 0 %}
+        <div class="item">
+            <p class="card-title">{{ good_.price }} BYN</p>
+            <p class="card-title">&#10004; В наличии</p>
+            <form action="{% url 'cart:cart_add' good.id%}" method="post">
+                <div class="form-group">
+                    {% csrf_token %}
+                    <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
+                    <button type="submit" style="outline: none; border: none; background-color: white; text-align: center"><img src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"></button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="item">
+            <p class="card-title">&#10008; Нет в наличии</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}

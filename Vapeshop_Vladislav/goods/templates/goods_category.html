@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<form action="{% url 'goods:goods_search' %}" class="search-form" style="display: flex; justify-content: center; padding: 10px">
+  <input placeholder="Поиск" name="search" class="search" style="width: 600px; background-color: rgba(255,255,255,1)">
+  <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
+</form>
+<div class="category">
+  <p style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 5px; font-family: Gill Sans, sans-serif; font-size: 27px">{{category}}:</p>
+</div>
+<div class="catalog" id="List_line">
+  {% for line in lines %}
+  {% for good in goods %}
+  {% if good.line == line %}
+  <div class="line">
+    <li style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 5px; font-family: Gill Sans, sans-serif;">{{line}}:</li>
+  </div>
+  <div class="product" >
+    <div class="item">
+      <a href="{% url 'goods:goods_detail' good.pk good.category%}" class="card-body" style="text-decoration: none;">
+        <img class="card-img-top" src="{{ good.image.url }}" style="margin:auto;height:150px;width:150px">
+        <p class="card-title">{{ good.line }}-{{ good.taste }} ({{good.stronghold}})</p>
+      </a>
+    </div>
+    {% if good.quantity > 0 %}
+    <div class="item">
+      <p class="card-title">{{ good.price }} BYN</p>
+      <p class="card-title">&#10004; В наличии</p>
+      <form action="{% url 'cart:cart_add' good.id%}" method="post">
+        <div class="form-group">
+          {% csrf_token %}
+          <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
+          <button type="submit" style="outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 15px " ><img class="in-cart" src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"> В коризну</button>
+        </div>
+      </form>
+      </form>
+    </div>
+    {% else %}
+    <div class="item">
+      <p class="card-title">&#10008; Нет в наличии</p>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<form action="{% url 'goods:goods_search' %}" style="display: flex; justify-content: center; padding: 10px">
+  <input placeholder="Поиск" name="search" class="search" style="width: 600px">
+  <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
+</form>
+<div class="category">
+    <p style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 0 5px; font-family: Gill Sans, sans-serif; font-size: 27px">Результаты по запросу "{{search}}":</p>
+</div>
+<div class="catalog">
+    {% for good in goods %}
+        {% if search.lower in good.taste.lower  or search.lower in good.category.category.lower or search.lower in good.tegs.lower or search.lower in good.line.line.lower or search in good.stronghold.lower%}
+        <div class="product" >
+            <div class="item">
+                <a href="{% url 'goods:goods_detail' good.pk good.category %}" class="card-body" style="text-decoration: none;">
+                    <img class="card-img-top" src="{{ good.image.url }}" style="margin:auto;height:150px;width:150px">
+                    <p class="card-title">{{ good.line }}-{{ good.taste }} ({{good.stronghold}})</p>
+                </a>
+            </div>
+            {% if good.quantity > 0 %}
+            <div class="item">
+                <p class="card-title">{{ good.price }} BYN</p>
+                <p class="card-title">&#10004; В наличии</p>
+                <form action="{% url 'cart:cart_add' good.id%}" method="post">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
+                        <button type="submit" style="outline: none; border: none; background-color: white; text-align: center"><img src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"></button>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="item">
+                <p class="card-title">&#10008; Нет в наличии</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

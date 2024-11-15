@@ -1,0 +1,15 @@
+{% extends "base_order.html" %}
+{% block page_content %}
+    <h1 style="width: fit-content; margin: 20px; padding: 5px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); font-family: OCR A Std, monospace">Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% if error %}
+            <p style="width: fit-content; margin: 20px; padding: 5px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); font-family: OCR A Std, monospace">Проверьте имя пользователя или пароль</p>
+        {% endif %}
+        <label for="username" style="width: fit-content; margin: 20px; padding: 5px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); font-family: OCR A Std, monospace">Имя пользователя:</label>
+        <input type="text" id="username" name="username" style="border-radius: 10px" required>
+        <label for="password" style="width: fit-content; margin: 20px; padding: 5px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); font-family: OCR A Std, monospace">Пароль:</label>
+        <input type="password" id="password" name="password" style="border-radius: 10px" required>
+        <button type="submit" style="border-radius: 10px; background-color: rgba(255, 255, 255, 0.8);">Войти</button>
+    </form>
+{% endblock %}

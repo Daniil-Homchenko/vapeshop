@@ -1,0 +1,25 @@
+{% extends "base_order.html" %}
+{% block page_content %}
+    {% if user.is_authenticated %}
+    <form action="{% url 'order_search' %}" style="display: flex; justify-content: center">
+        <input placeholder="Поиск" name="search" class="search" style="width: 600px">
+        <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
+    </form>
+        <div class="order-list" style="margin: 50px 0 0 0; width: 700px">
+            {% for order in orders %}
+                    <div class="order" style="width: 650px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 30px; margin: 10px 20px;padding: 10px">
+                        <p style="font-family: OCR A Std, monospace; font-size: 30px; font-weight: bolder">Номер заказа #{{order.order_number}} ({{order.state}}):</p>
+                        {% for order_item in order_items %}
+                            {% if order_item.order == order %}
+                                <p class="order-product"><img src="{{ order_item.product.image.url }}" style="border-radius: 20px; margin:auto;height:100px;width:100px"> {{order_item.product.line}}-{{order_item.product.taste}}({{order_item.product.stronghold}}) - {{order_item.quantity}} Шт.</p>
+                            {% endif %}
+                        {% endfor %}
+                        <p>Стоимость заказа - {{order.total_price}}</p>
+                        <a href="{%url 'order_reset' order.id%}" class="btn btn-warning">Вернуть в обработку</a>
+                        <a href="{%url 'order_stop' order.id%}" class="btn btn-danger">Отменить</a>
+                        <a href="{%url 'get_invoice' order.id%}" class="btn btn-success">Получить накладную</a>
+                    </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}}
