@@ -1,4 +1,6 @@
 from decimal import Decimal
+from os import remove
+
 from django.conf import settings
 from goods.models import Goods
 from django.shortcuts import get_object_or_404
@@ -11,10 +13,15 @@ class Cart(object):
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
-        for item in cart:
-            good = get_object_or_404(Goods, id=item)
-            if cart[item]['quantity'] > good.quantity:
-                cart[item]['quantity'] = int(good.quantity)
+        try:
+            for item in cart:
+                good = get_object_or_404(Goods, id=item)
+                if cart[item]['quantity'] > good.quantity:
+                    cart[item]['quantity'] = int(good.quantity)
+                elif cart[item]['quantity'] == 0:
+                    del cart[item]
+        except RuntimeError:
+            pass
         self.cart = cart
 
     def save(self):
