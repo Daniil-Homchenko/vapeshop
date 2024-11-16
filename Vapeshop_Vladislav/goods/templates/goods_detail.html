@@ -7,18 +7,41 @@
 </form>
 <div class="detail">
     <div class="detail-1">
-        <p class="detail-name">{{good.line}} - {{good.taste}} ({{good.stronghold}})</p>
+        <p class="detail-name">{{good.line}} - {{good.taste}}</p>
         <img class="detail-img" src="{{ good.image.url }}">
-        <p class="detail-price">Цена</p>
-        <p class="detail-price-value">{{good.price}} BYN</p>
         {% if good.quantity > 0 %}
-        <form action="{% url 'cart:cart_add' good.id%}" method="post">
-            <div class="form-group">
+        <div class="item">
+            <p class="detail-price">{{ good.price }} BYN</p>
+            {% if good.id in cart_ids %}
+            {% for item in cart %}
+            {% if item.product == good %}
+            <p class="card-title">Количество в корзине</p>
+            <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; width: 100%; aspect-ratio: 4 / 1">
                 {% csrf_token %}
-                <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
-                <button type="submit" style="outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 15px " ><img class="in-cart" src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"> В коризну</button>
-            </div>
-        </form>
+                <div class="number-input">
+                    <button type="button" class="decrement" title="Уменьшить">-</button>
+                    {{ item.update_quantity_form.quantity }}
+                    {{ item.update_quantity_form.update }}
+                    <button type="button" class="increment" title="Увеличить">+</button>
+                </div>
+                <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); max-width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+            </form>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <form action="{% url 'cart:cart_add' good.id%}" method="post">
+                <div class="form-group">
+                    {% csrf_token %}
+                    <p style="display: none; text-align: center;" >{{ cart_product_form.quantity }}</p>
+                    <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 40%" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(12px, 2vw, 20px)">&nbsp;В коризну</p></button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="item">
+            <p class="card-title">&#10008; Нет в наличии</p>
+        </div>
         {% endif %}
     </div>
     <div class="detail-2">
@@ -26,6 +49,8 @@
         <p class="detail-category-name">{{good.category}}</p>
         <p class="detail-category">О товаре:</p>
         <p class="detail-category-name">{{good.description}}</p>
+        <p class="detail-category">Крепость:</p>
+        <p class="detail-category-name">{{good.stronghold}}</p>
         {% if good.quantity > 0 %}
         <p class="detail-existence">&#10004; В наличии</p>
         {% else %}
@@ -38,29 +63,46 @@
 </div>
 <div class="catalog" id="List_line">
     {% for line in lines %}
-    {% for good_ in goods %}
+    {% for good_ in goods_also %}
     {% if good_.line == line %}
     <div class="line">
-        <li style="width: fit-content; background-color: rgba(255,255,255,0.7); border-radius: 10px; padding: 5px; font-family: Gill Sans, sans-serif;">{{line}}:</li>
+        <li style="display: inline-block; background-color: rgba(255,255,255,0.7); color: #000000; border-radius: 10px; padding: 5px">{{line}}:</li>
     </div>
     <div class="product" >
         <div class="item">
-            <a href="{% url 'goods:goods_detail' good_.pk good_.category%}" class="card-body" style="text-decoration: none;">
-                <img class="card-img-top" src="{{ good_.image.url }}" style="margin:auto;height:100px;width:100px">
-                <p class="card-title">{{ good_.line }}-{{ good_.taste }} ({{good_.stronghold}})</p>
+            <a href="{% url 'goods:goods_detail' good_.pk good_.category %}" class="card-body" style="text-decoration: none;">
+                <img class="card-img-top" src="{{ good_.image.url }}">
+                <p class="card-name">{{ good_.line }}-{{ good_.taste }}</p>
             </a>
         </div>
         {% if good_.quantity > 0 %}
         <div class="item">
-            <p class="card-title">{{ good_.price }} BYN</p>
-            <p class="card-title">&#10004; В наличии</p>
-            <form action="{% url 'cart:cart_add' good.id%}" method="post">
+            <p class="card-name">{{ good_.price }} BYN</p>
+                    {% if good_.id in cart_ids %}
+                    {% for item in cart %}
+                    {% if item.product == good_ %}
+            <p class="card-title">Количество в корзине</p>
+            <form action="{% url 'cart:cart_add' good_.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; width: 100%; aspect-ratio: 4 / 1">
+                {% csrf_token %}
+                <div class="number-input">
+                    <button type="button" class="decrement" title="Уменьшить">-</button>
+                    {{ item.update_quantity_form.quantity }}
+                    {{ item.update_quantity_form.update }}
+                    <button type="button" class="increment" title="Увеличить">+</button>
+                </div>
+                <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); max-width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+            </form>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <form action="{% url 'cart:cart_add' good_.id%}" method="post">
                 <div class="form-group">
                     {% csrf_token %}
                     <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
-                    <button type="submit" style="outline: none; border: none; background-color: white; text-align: center"><img src="/media/images/Cart.png" style="height: 35px; width: 35px; border-radius: 0"></button>
+                    <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 80%" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(12px, 2vw, 20px)"> В коризну</p></button>
                 </div>
             </form>
+            {% endif %}
         </div>
         {% else %}
         <div class="item">

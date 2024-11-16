@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block page_content %}
-{% load custom_filters %}
 <form action="{% url 'goods:goods_search' %}" class="search-form" style="position: relative; display: flex; justify-content: center; padding: 10px; min-width: 70%; max-width: 90%; left: 50%; transform: translate(-50%);">
     <label style=" min-width: 60%">
         <input placeholder="Поиск" name="search" class="search" style="position: relative; background-color: rgba(255,255,255,1); min-height: 90%; min-width: 100%; left: 50%; transform: translate(-50%);">
@@ -14,60 +12,59 @@
                 <p>{{category}}:</p>
                 <a href="{% url 'goods:goods_category' category.category %}"> Перейти в категорию &#10149; </a>
             </div>
-        <div class="catalog" id="List_line">
-            {% for line in lines %}
-                {% for good in goods %}
-                    {% if good.category == category and good.line == line %}
-                        <div class="line">
-                            <li style="display: inline-block; background-color: rgba(255,255,255,0.7); color: #000000; border-radius: 10px; padding: 5px">{{line}}:</li>
-                        </div>
-                        <div class="product" >
-                            <div class="item">
-                                <a href="{% url 'goods:goods_detail' good.pk good.category %}" class="card-body" style="text-decoration: none;">
-                                    <img class="card-img-top" src="{{ good.image.url }}">
-                                    <p class="card-name">{{ good.line }}-{{ good.taste }}</p>
-                                </a>
+            <div class="catalog" id="List_line">
+                {% for line in lines %}
+                    {% for good in goods %}
+                        {% if good.category == category and good.line == line %}
+                            <div class="line">
+                                <li style="display: inline-block; background-color: rgba(255,255,255,0.7); color: #000000; border-radius: 10px; padding: 5px">{{line}}:</li>
                             </div>
-                            {% if good.quantity > 0 %}
+                            <div class="product" >
                                 <div class="item">
-                                    <p class="card-name">{{ good.price }} BYN</p>
-                                    <p class="card-title">&#10004; В наличии</p>
-                                            {% if good.id in cart_ids %}
-                                                {% for item in cart %}
-                                                {% if item.product == good %}
-                                                <p class="card-title">Количество в корзине</p>
-                                                <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center">
-                                                    {% csrf_token %}
-                                                    <div class="number-input">
-                                                        <button type="button" class="decrement" title="Уменьшить">-</button>
-                                                        {{ item.update_quantity_form.quantity|add_class:"add-goods" }}
-                                                        {{ item.update_quantity_form.update }}
-                                                        <button type="button" class="increment" title="Увеличить">+</button>
-                                                    </div>
-                                                    <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: 30px; margin: 0 0 0 5px; max-width: 50px; max-height: 50px;" title="Обновить количество в корзине">&#8635;</button>
-                                                </form>
-                                                {% endif %}
-                                                {% endfor %}
-                                            {% else %}
-                                                <form action="{% url 'cart:cart_add' good.id%}" method="post">
-                                                    <div class="form-group">
+                                    <a href="{% url 'goods:goods_detail' good.pk good.category %}" class="card-body" style="text-decoration: none;">
+                                        <img class="card-img-top" src="{{ good.image.url }}">
+                                        <p class="card-name">{{ good.line }}-{{ good.taste }}</p>
+                                    </a>
+                                </div>
+                                {% if good.quantity > 0 %}
+                                    <div class="item">
+                                        <p class="card-name">{{ good.price }} BYN</p>
+                                                {% if good.id in cart_ids %}
+                                                    {% for item in cart %}
+                                                    {% if item.product == good %}
+                                                    <p class="card-title">Количество в корзине</p>
+                                                    <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; width: 100%; aspect-ratio: 4 / 1">
                                                         {% csrf_token %}
-                                                        <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
-                                                        <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 80%" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(12px, 2vw, 20px)"> В коризну</p></button>
-                                                    </div>
-                                                </form>
-                                            {% endif %}
-                                </div>
-                            {% else %}
-                                <div class="item">
-                                     <p class="card-title">&#10008; Нет в наличии</p>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                                                        <div class="number-input">
+                                                            <button type="button" class="decrement" title="Уменьшить">-</button>
+                                                            {{ item.update_quantity_form.quantity }}
+                                                            {{ item.update_quantity_form.update }}
+                                                            <button type="button" class="increment" title="Увеличить">+</button>
+                                                        </div>
+                                                        <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); max-width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+                                                    </form>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <form action="{% url 'cart:cart_add' good.id%}" method="post">
+                                                        <div class="form-group">
+                                                            {% csrf_token %}
+                                                            <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
+                                                            <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 80%" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(12px, 2vw, 20px)">&nbsp;В коризну</p></button>
+                                                        </div>
+                                                    </form>
+                                                {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="item">
+                                         <p class="card-title">&#10008; Нет в наличии</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </div>
+            </div>
         </div>
 {% endfor %}
 {% endblock %}
