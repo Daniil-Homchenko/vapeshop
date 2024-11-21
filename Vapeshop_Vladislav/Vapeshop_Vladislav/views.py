@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from goods.models import Goods
 from cart.cart import Cart
 from order.models import Order, OrderItem, State
-from .forms import PriceOrderUpdate
+from .forms import PriceOrderUpdate, PriceOrderUpdate_2
 from .invoice import generate_invoice
 
 
@@ -58,10 +58,12 @@ def order_list(request):
     )
     order_items = OrderItem.objects.all()
     form = PriceOrderUpdate()
+    form_2 = PriceOrderUpdate_2()
     context = {
         'orders': order,
         'order_items': order_items,
         'form': form,
+        'form_2': form_2,
         'mounth_sum':mounth_sum,
         'mounth_order': mounth_order,
         'week_sum': week_sum,
@@ -161,11 +163,24 @@ def order_reset(request, id):
     order.save()
     return redirect('order_list')
 
-def update_price(request, id):
+def update_total_price(request, id):
     order = get_object_or_404(Order, id=id)
     form = PriceOrderUpdate(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
         order.total_price = cd['price']
+        order.save()
+    return redirect('order_list')
+
+def update_price(request, order_id, order_item_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_item = get_object_or_404(OrderItem, id=order_item_id)
+    form = PriceOrderUpdate_2(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        delta_price = (order_item.price - cd['price']) * order_item.quantity
+        order_item.price = cd['price']
+        order_item.save()
+        order.total_price -= delta_price
         order.save()
     return redirect('order_list')

@@ -34,6 +34,9 @@ def cart_detail(request):
     cart = Cart(request)
     lines = models.Line.objects.all().order_by('line')
     action = get_object_or_404(models.Categories, category__contains='Акции')
+    goods = models.Goods.objects.all().order_by(
+            'taste'
+        )
     categories_ = models.Categories.objects.exclude(id=action.id).order_by('category')
     categories = [action] + list(categories_)
     for item in cart:
@@ -42,4 +45,5 @@ def cart_detail(request):
 
     return render(request, template_name='cart_detail.html', context={'cart': cart,
                                                                       'categories': categories,
-                                                                      'lines': lines,})
+                                                                      'lines': lines,
+                                                                      'goods': goods})

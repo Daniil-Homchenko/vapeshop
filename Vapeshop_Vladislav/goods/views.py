@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from cart.forms import CartAddProductForm
 from cart.cart import Cart
+from unicodedata import category
+
 from .models import Goods, Categories, Line
 
 
@@ -89,8 +91,9 @@ def goods_search(request):
     }
     return render(request, template_name='goods_search.html', context=context)
 
-def goods_category(request, category):
+def goods_category(request, category_id):
     cart = Cart(request)
+    category = get_object_or_404(Categories, id=category_id)
     goods_cat = Goods.objects.filter(
         category__category__contains=category
     ).order_by(

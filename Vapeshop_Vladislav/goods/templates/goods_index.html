@@ -10,7 +10,7 @@
         <div class="category">
             <div class="category_link">
                 <p>{{category}}:</p>
-                <a href="{% url 'goods:goods_category' category.category %}"> Перейти в категорию &#10149; </a>
+                <a href="{% url 'goods:goods_category' category.id %}"> Перейти в категорию &#10149; </a>
             </div>
             <div class="catalog" id="List_line">
                 {% for line in lines %}
@@ -33,7 +33,7 @@
                                                     {% for item in cart %}
                                                     {% if item.product == good %}
                                                     <p class="card-title">Количество в корзине</p>
-                                                    <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; width: 100%; aspect-ratio: 4 / 1">
+                                                    <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; min-width: 156px; width: 120%; max-width: 200px; height: 50px">
                                                         {% csrf_token %}
                                                         <div class="number-input">
                                                             <button type="button" class="decrement" title="Уменьшить">-</button>
@@ -41,7 +41,7 @@
                                                             {{ item.update_quantity_form.update }}
                                                             <button type="button" class="increment" title="Увеличить">+</button>
                                                         </div>
-                                                        <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); max-width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+                                                        <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
                                                     </form>
                                                     {% endif %}
                                                     {% endfor %}

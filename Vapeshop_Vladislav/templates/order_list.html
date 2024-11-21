@@ -21,10 +21,18 @@
                     {% for order_item in order_items %}
                         {% if order_item.order == order %}
                             <p class="order-product"><img src="{{ order_item.product.image.url }}" style="border-radius: 20px; margin:auto;height:100px;width:100px"> {{order_item.product.line}}-{{order_item.product.taste}}({{order_item.product.stronghold}}) - {{order_item.quantity}} Шт.</p>
+                            <p class="order-product">Действующая цена: {{ order_item.price }}</p>
+                            <form action="{% url 'update_price' order.id order_item.id%}" method="post" style="display: flex; flex-wrap: wrap; position: relative; margin: -20px 0 0 0; padding: 10px">
+                                <div class="form-group">
+                                {% csrf_token %}
+                                {{ form_2.price }}
+                                <button type="submit" style="border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: white; text-align: center; margin: 0 0 0 5px">Изменить цену</button>
+                            </div>
+                            </form>
                         {% endif %}
                     {% endfor %}
                     <p>Стоимость заказа - {{order.total_price}}</p>
-                    <form action="{% url 'update_price' order.id%}" method="post" style="position: absolute; margin: -40px 0 0 250px">
+                    <form action="{% url 'update_total_price' order.id%}" method="post" style="position: absolute; margin: -40px 0 0 250px">
                         <div class="form-group">
                             {% csrf_token %}
                             {{ form.price }}

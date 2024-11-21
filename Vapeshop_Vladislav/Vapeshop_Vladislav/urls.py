@@ -14,7 +14,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from tkinter.font import names
 
 from django.contrib import admin
 from django.urls import path, include
@@ -24,7 +23,8 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('order_list/', views.order_list, name='order_list'),
-    path('update_price/<int:id>', views.update_price, name='update_price'),
+    path('update_total_price/<int:id>', views.update_total_price, name='update_total_price'),
+    path('update_price/<int:order_id>/<order_item_id>', views.update_price, name='update_price'),
     path('order_complete/<int:id>', views.order_complete, name='order_complete'),
     path('get_invoice/<int:id>', views.get_invoice, name='get_invoice'),
     path('order_completed', views.order_completed, name='order_completed'),

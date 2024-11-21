@@ -1,4 +1,4 @@
-from idlelib.configdialog import font_sample_text
+
 
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -43,7 +43,7 @@ def generate_invoice(order, order_items):
             if i.product.line == line:
                 if count == 1:
                     data.append(['', Paragraph(str(line), styles['TimesNewRomanBold'])])
-                data.append([Paragraph(str(count), styles['Center']), Paragraph(str(f'{i.product.line}-{i.product.taste} ({i.product.stronghold})'), styles['Left12']), Paragraph(str(i.quantity), styles['Center']), Paragraph(str(float(i.product.price)), styles['Center']), Paragraph(str(float(i.product.price) * float(i.quantity)), styles['Center'])])
+                data.append([Paragraph(str(count), styles['Center']), Paragraph(str(f'{i.product.line}-{i.product.taste} ({i.product.stronghold})'), styles['Left12']), Paragraph(str(i.quantity), styles['Center']), Paragraph(str(float(i.price)), styles['Center']), Paragraph(str(float(i.price) * float(i.quantity)), styles['Center'])])
                 count +=1
                 value += i.quantity
     col_widths = [40, 300, 60, 60, 60]

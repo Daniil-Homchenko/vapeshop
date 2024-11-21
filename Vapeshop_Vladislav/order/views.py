@@ -11,15 +11,18 @@ from .models import Order, OrderItem, State
 # Create your views here.
 def checkout(request):
     cart = Cart(request)
-    order = Order.objects.create(total_price=cart.get_total_price(),
-                                 created_at = timezone.now())
+    order = Order.objects.create(created_at = timezone.now())
+    total_price = 0
     for item in cart:
         OrderItem.objects.create(
             order=order,
             product=Goods.objects.get(pk=item['product'].id),
-            quantity=item['quantity']
+            quantity=item['quantity'],
+            price=Goods.objects.get(pk=item['product'].id).price
         )
-
+        total_price += Goods.objects.get(pk=item['product'].id).price * item['quantity']
+    order.total_price = total_price
+    order.save()
     cart.clear()  # Очистка корзины после оформления заказа
     cart = Cart(request)
     order_items = OrderItem.objects.all()
