@@ -5,10 +5,10 @@ from . import views
 
 urlpatterns = [
     path('', views.goods_list, name='goods_list'),
-    path('<int:pk>/<category>', views.goods_detail, name='goods_detail'),
+    path('good/<int:pk>/<int:line_id>', views.goods_detail, name='goods_detail'),
     path('search/', views.goods_search, name='goods_search'),
-    path('<int:category_id>/', views.goods_category, name='goods_category'),
-    path('"<line>"', views.goods_line, name='goods_line')
+    path('category/<int:category_id>/', views.goods_category, name='goods_category'),
+    path('line/<int:line_id>', views.goods_line, name='goods_line')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

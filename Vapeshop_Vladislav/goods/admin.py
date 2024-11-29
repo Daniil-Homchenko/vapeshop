@@ -11,7 +11,8 @@ class GoodsAdmin(admin.ModelAdmin):
     get_line_line.admin_order_field = 'line__line'  # Позволяет сортировать по полю
     get_line_line.short_description = 'Line Line'
 class LineAdmin(admin.ModelAdmin):
-    ordering = ('line',)
+    ordering = ('brand', 'line',)
 admin.site.register(Goods, GoodsAdmin)
 admin.site.register(Categories)
 admin.site.register(Line, LineAdmin)
+

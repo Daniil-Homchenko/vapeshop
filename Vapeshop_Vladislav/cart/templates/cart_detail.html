@@ -2,14 +2,16 @@
 {% load static %}
 {% block page_content %}
 <div class="cart-cart">
-    <p style="position:absolute; left: 20px; top: 90px; font-family: Gill Sans, sans-serif; background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 5px 10px; font-size: clamp(20px, 2vw, 30px)">Корзина</p>
-    <a href="{% url 'cart:cart_clear' %}" style="position: absolute;top: 90px; left: 50%; background-color: rgba(255, 255, 255, 0.8); z-index: 0; text-decoration: none; font-family: Gill Sans, sans-serif; font-size: clamp(14px, 1.5vw, 20px); color: black; border: 1px solid rgba(64, 61, 61, 0.5); padding: 5px; border-radius: 10px"><img src="{% static 'icon/delete.png' %}" style=" width: 20%; max-width: 40px; height: 90%">Очистить корзину</a>
+    <div style="display: flex; justify-content: space-between; width: 100%; position: relative; top: 30px">
+        <p style="width: fit-content; height: fit-content; font-family: Gill Sans, sans-serif; background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; padding: 5px 10px; font-size: clamp(20px, 2vw, 30px)">Корзина</p>
+        <a href="{% url 'cart:cart_clear' %}" style=" width: fit-content; height: fit-content; background-color: rgba(255, 255, 255, 0.8); z-index: 0; text-decoration: none; font-family: Gill Sans, sans-serif; font-size: clamp(14px, 1.5vw, 20px); color: black; border: 1px solid rgba(64, 61, 61, 0.5); padding: 5px; border-radius: 10px"><img src="{% static 'icon/delete.png' %}" style=" width: 20%; max-width: 40px; height: 90%">Очистить корзину</a>
+    </div>
     <div class="cart-catalog">
         {% for item in cart %}
             {% with product=item.product %}
                 <div class="cart-item">
                     <div class="cart-item-1">
-                        <a href="{% url 'goods:goods_detail' product.pk product.category %}" class="link-img">
+                        <a href="{% url 'goods:goods_detail' product.pk product.line.id %}" class="link-img">
                             <img class="cart-img" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'icon/no_image.png' %}{% endif %}">
                         </a>
                         <div class="cart-item-1-1">
@@ -20,15 +22,14 @@
                     <div class="cart-item-2">
                         <div class="cart-item-2-1">
                             <p class="cart-quantity">Сейчас в корзине: {{ item.quantity }}</p>
-                            <form action="{% url 'cart:cart_add' product.id %}" method="post" style="display: flex; justify-content: center; position: relative; min-width: 156px; width: 120%; max-width: 200px; height: 50px">
+                            <form action="{% url 'cart:cart_add' product.id %}" method="post" style="display: flex; flex-wrap: wrap; justify-content: center; position: relative; transform: translate(-50%); left: 50%; min-width: 156px; width: 100%; max-width: 200px; height: 65px">
                                 {% csrf_token %}
                                 <div class="number-input">
                                     <button type="button" class="decrement" title="Уменьшить">-</button>
                                     {{ item.update_quantity_form.quantity }}
                                     {{ item.update_quantity_form.update }}
-                                    <button type="button" class="increment" title="Увеличить">+</button>
-                                </div>
-                                <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+                                    <button type="button" class="increment" title="Увеличить">+</button></div>
+                                <button type="submit" style="outline: none; border: none; border-bottom: 1px solid rgba(79, 70, 126, 0.8); border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-top: 1px solid rgba(79, 70, 126, 0.8); border-top-right-radius: 10px; border-top-left-radius: 10px; background-color: transparent; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(12px, 2vw, 18px); width: 100%; max-height: 100%; color: #212529" title="Обновить количество в корзине">Обновить</button>
                             </form>
                         </div>
                         <div class="cart-item-2-2">

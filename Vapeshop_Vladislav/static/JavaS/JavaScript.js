@@ -25,6 +25,15 @@ for (var i = 0; i < categoryButtons.length; i++) {
     });
 }
 
+var subcategoryButtons = document.getElementsByClassName('subcategoryButton');
+for (var i = 0; i < categoryButtons.length; i++) {
+    subcategoryButtons[i].addEventListener('click', function(event) {
+        var sub-subcategoryPanel = this.nextElementSibling;
+        sub-subcategoryPanel.classList.toggle('hidden');
+        event.stopPropagation();
+    });
+}
+
 document.addEventListener('click', function(event) {
     var menuPanel = document.getElementById('menuPanel');
     if (!menuPanel.contains(event.target)) {
@@ -48,7 +57,21 @@ for (var i = 0; i < subcategoryPanels.length; i++) {
     }
 }
 
-
+var sub-subcategoryPanels = document.getElementsByClassName('sub-subcategoryPanel');
+for (var i = 0; i < sub-subcategoryPanels.length; i++) {
+    var sub-subcategoryPanel = sub-subcategoryPanels[i];
+    var sub-subcategoryItems = sub-subcategoryPanel.getElementsByTagName('li');
+    var sub-seen = {};
+    for (var j = 0; j < sub-subcategoryItems.length; j++) {
+        var sub-item = sub-subcategoryItems[j];
+        var sub-text = sub-item.innerText;
+        if (sub-seen[text]) {
+            sub-item.style.display = 'none';
+        } else {
+            sub-seen[text] = true;
+        }
+    }
+}
 
 document.querySelectorAll('.catalog').forEach(catalog => {
     if (!catalog.querySelector('.product')) {

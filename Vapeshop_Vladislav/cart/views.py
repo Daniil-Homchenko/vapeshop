@@ -5,6 +5,7 @@ from goods import models
 from .cart import Cart
 from .forms import CartAddProductForm
 
+
 # Create your views here.
 
 def cart_add(request, id):
@@ -34,11 +35,11 @@ def cart_detail(request):
     cart = Cart(request)
     lines = models.Line.objects.all().order_by('line')
     action = get_object_or_404(models.Categories, category__contains='Акции')
-    goods = models.Goods.objects.all().order_by(
-            'taste'
-        )
     categories_ = models.Categories.objects.exclude(id=action.id).order_by('category')
     categories = [action] + list(categories_)
+    goods_list = {}
+    for line in lines:
+        goods_list[line.line] = models.Goods.objects.filter(line=line).order_by('taste')[:1]
     for item in cart:
         item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
                                                                    'update': True})
@@ -46,4 +47,4 @@ def cart_detail(request):
     return render(request, template_name='cart_detail.html', context={'cart': cart,
                                                                       'categories': categories,
                                                                       'lines': lines,
-                                                                      'goods': goods})
+                                                                      'goods_list': goods_list})

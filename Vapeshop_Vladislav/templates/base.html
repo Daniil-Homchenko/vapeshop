@@ -5,29 +5,45 @@
     <meta charset="UTF-8">
     <title>SMOKITTY</title>
     <link rel="icon" href="{% static 'icon/favicon.png' %}" type="image/png">
-    <link rel="stylesheet" href="{% static 'css/Style2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Style6.css' %}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-        <div class="header" style="display: flex; justify-content: space-between; height: 50px">w
-            <a href="{% url 'goods:goods_list' %}" style="min-width: 25%; max-width: fit-content; border-radius: 10px; display: flex; position: relative; left: 20px; text-decoration: none; color: black; top: 0"><img src="/media/images/smokitty_logo.png" style="height: 100%; max-width: 100%"></a>
-            <div style="display:flex; justify-content: right; width: 40%;">
+        <meta name="viewport" content="width=device-width">
+        <div class="header" style="display: flex; justify-content: space-between; height: 50px">
+            <a href="{% url 'goods:goods_list' %}" style="max-width: fit-content; display: flex; text-decoration: none;"><img src="/media/images/smokitty_logo.png" style="height: 100%; max-width: 100%"></a>
+            <div style="position: relative; right: 10px; display:flex; justify-content: right; width: 30%;">
+                <a href="{% url 'cart:cart_detail' %}" class="cart_button" style="display: block; position: relative; right: 20px; max-height: 50px; width: fit-content; text-decoration: none"> <div class="cart_len"> {{cart.get_len}} </div><img src="/media/images/Cart.png" style="position: relative; top: -20px; height: 37px; width: 37px; z-index: 0"></a>
                 <button class="collapsible" id="menuButton">&#9776;</button>
                 <div id="menuPanel" class="hidden">
                     <ul class="categoryList" id="categoryList">
                         {% if user.is_authenticated %}
-                        <li><a href="{% url 'order_list' %}" style="position: relative; left: 70%; padding: 0 20px; text-decoration: none; color: black; border-radius: 10px; border: 2px solid rgb(79, 69, 127); font-family: Gill Sans, sans-serif; background-color: white;">&#36;</a></li>
+                            <li><a href="{% url 'order_list' %}" style="position: relative; left: 70%; padding: 0 20px; text-decoration: none; color: black; border-radius: 10px; border: 2px solid rgb(79, 69, 127); font-family: Gill Sans, sans-serif; background-color: white;">&#36;</a></li>
                         {% endif %}
                         {% for categor in categories %}
                         <li>
                             <button class="categoryButton">{{ categor }}</button>
                             <ul class="subcategoryPanel hidden" data-category-id="{{ categor.id }}">
                                 {% for lin in lines %}
+                                {% for goods in goods_list.values %}
                                 {% for good in goods %}
                                 {% if good.category == categor and good.line == lin %}
-                                <li><a href="{% url 'goods:goods_line' lin %}" class="LineInCategory">{{ lin }}</a></li>
+                                {% if lin.line %}
+                                    <button class="subcategoryButton">{{ lin.brand }}</button>
+                                    <ul class="sub-subcategoryPanel hidden" data-line-id="{{ lin.id }}">
+                                        {% for goods_ in goods_list.values %}
+                                        {% for good_ in goods_ %}
+                                        {% if good_.category == categor and good_.line.brand == lin.brand %}
+                                            <li><a href="{% url 'goods:goods_line' good_.line.id %}" class="LineInCategory">{{ good_.line.line }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <li><a href="{% url 'goods:goods_line' good.line.id %}" class="LineInCategory">{{ lin.brand }}</a></li>
                                 {% endif %}
+                                {% endif %}
+                                {% endfor %}
                                 {% endfor %}
                                 {% endfor %}
                             </ul>
@@ -35,20 +51,15 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <a href="{% url 'cart:cart_detail' %}" class="cart_button" style="display: block; position: relative; right: 20px; max-height: 100%; width: fit-content; text-decoration: none"> <div class="cart_len"> {{cart.get_len}} </div><img src="/media/images/Cart.png" style="position: relative; top: -20px; max-height: 90%; max-width: 90%; z-index: 0"></a>
             </div>
         </div>
-    <meta name="viewport" content="width=device-width">
-
-
-
 
 </head>
 <body>
     <div class="background"></div>
  {% block page_content %}
  {% endblock %}
- <script src="{% static 'JavaS/JavaScript.js'%}"></script>
+ <script src="{% static 'JavaS/JSS1.js'%}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

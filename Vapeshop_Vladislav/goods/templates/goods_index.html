@@ -10,18 +10,20 @@
         <div class="category">
             <div class="category_link">
                 <p>{{category}}:</p>
-                <a href="{% url 'goods:goods_category' category.id %}"> Перейти в категорию &#10149; </a>
+                <a href="{% url 'goods:goods_category' category.id %}"> Перейти в категорию </a>
             </div>
             <div class="catalog" id="List_line">
                 {% for line in lines %}
+                    {% for goods in goods_list.values %}
                     {% for good in goods %}
                         {% if good.category == category and good.line == line %}
                             <div class="line">
-                                <li style="display: inline-block; background-color: rgba(255,255,255,0.7); color: #000000; border-radius: 10px; padding: 5px">{{line}}:</li>
+                                <li class="line-name">{{line}}:</li>
+                                <a href="{% url 'goods:goods_line' line.id %}"> Перейти в линейку </a>
                             </div>
                             <div class="product" >
                                 <div class="item">
-                                    <a href="{% url 'goods:goods_detail' good.pk good.category %}" class="card-body" style="text-decoration: none;">
+                                    <a href="{% url 'goods:goods_detail' good.pk line.id %}" class="card-body" style="text-decoration: none;">
                                         <img class="card-img-top" src="{{ good.image.url }}">
                                         <p class="card-name">{{ good.line }}-{{ good.taste }}</p>
                                     </a>
@@ -32,8 +34,7 @@
                                                 {% if good.id in cart_ids %}
                                                     {% for item in cart %}
                                                     {% if item.product == good %}
-                                                    <p class="card-title">Количество в корзине</p>
-                                                    <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; justify-content: center; position: relative; transform: translate(-50%); left: 50%; min-width: 156px; width: 120%; max-width: 200px; height: 50px">
+                                                    <form action="{% url 'cart:cart_add' good.id %}" method="post" style="display: flex; flex-wrap: wrap; justify-content: center; position: relative; transform: translate(-50%); left: 50%; min-width: 156px; width: 100%; max-width: 200px; height: 65px">
                                                         {% csrf_token %}
                                                         <div class="number-input">
                                                             <button type="button" class="decrement" title="Уменьшить">-</button>
@@ -41,7 +42,7 @@
                                                             {{ item.update_quantity_form.update }}
                                                             <button type="button" class="increment" title="Увеличить">+</button>
                                                         </div>
-                                                        <button type="submit" style="outline: none; border: 0; border-radius: 10px; background-color: white; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(20px, 4vw, 30px); width: 25%; max-height: 100%" title="Обновить количество в корзине">&#8635;</button>
+                                                        <button type="submit" style="outline: none; border: none; border-bottom: 1px solid rgba(79, 70, 126, 0.8); border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-top: 1px solid rgba(79, 70, 126, 0.8); border-top-right-radius: 10px; border-top-left-radius: 10px; background-color: transparent; text-align: center; font-family: Gill Sans, sans-serif; font-size: clamp(12px, 2vw, 18px); width: 100%; max-height: 100%; color: #212529" title="Обновить количество в корзине">Обновить</button>
                                                     </form>
                                                     {% endif %}
                                                     {% endfor %}
@@ -50,7 +51,7 @@
                                                         <div class="form-group">
                                                             {% csrf_token %}
                                                             <p style="display: none; text-align: center;" > Количество - {{ cart_product_form.quantity }}</p>
-                                                            <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 80%" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(12px, 2vw, 20px)">&nbsp;В коризну</p></button>
+                                                            <button type="submit" style="position: relative;display: flex; flex-wrap: wrap; outline: none; border: 1px solid rgba(0,0,0,0.5);border-radius: 10px; left: 50%; transform: translate(-50%); background-color: white; justify-content: center; text-align: center; font-family: Gill Sans, sans-serif; padding: 5px 5px; max-width: 80% color: #212529;" ><img class="in-cart" src="/media/images/Cart.png" style="max-height: 20%; max-width: 20%; border-radius: 0"><p style="align-self: center; margin: 2px 0 0 0; font-size: clamp(10px, 2vw, 18px); color: #212529;">&nbsp;В корзину</p></button>
                                                         </div>
                                                     </form>
                                                 {% endif %}
@@ -62,6 +63,7 @@
                                 {% endif %}
                             </div>
                         {% endif %}
+                    {% endfor %}
                     {% endfor %}
                 {% endfor %}
             </div>
