@@ -1,10 +1,7 @@
 {% extends "base_order.html" %}
 {% block page_content %}
-    {% if user.is_authenticated %}
-    <form action="{% url 'order_search' %}" style="display: flex; justify-content: center">
-        <input placeholder="Поиск" name="search" class="search" style="width: 600px">
-        <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
-    </form>
+  <h1 style="background-color: white; top: 10px; padding: 5px 10px; border-radius: 5px; width: fit-content; position: relative; transform: translate(-50%); left: 50%;">Заказы за {{ date }}</h1>
+{% if user.is_authenticated %}
         <div class="order-list" style="position: relative; margin: 50px 0 0 0; width: 90%; transform: translate(-50%); left: 50%;">
             {% for order in orders %}
                 {% if order.state.id == 1 %}
@@ -78,4 +75,5 @@
             {% endfor %}
         </div>
     {% endif %}
+
 {% endblock %}

@@ -1,14 +1,14 @@
-from datetime import datetime, timedelta
-from django.utils import timezone
-from lib2to3.fixes.fix_input import context
-from django.shortcuts import render, redirect, get_object_or_404
+from calendar import month
+
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from goods.models import Goods
-from cart.cart import Cart
 from order.models import Order, OrderItem, State
-from .forms import PriceOrderUpdate, PriceOrderUpdate_2
+from .forms import PriceOrderUpdate, PriceOrderUpdate_2, PaymentForm, MonthForm
 from .invoice import generate_invoice
+import datetime
+from django.db.models import Sum
 
 
 def login_view(request):
@@ -28,48 +28,19 @@ def login_view(request):
 
 @login_required
 def order_list(request):
-    today = timezone.now()
-    start_date = today - timedelta(days=30)
-    orders_date = Order.objects.filter(created_at__gte=start_date)
-    mounth_sum = 0
-    mounth_order = 0
-    for item in orders_date:
-        if item.state == get_object_or_404(State, id=2):
-            mounth_sum += item.total_price
-            mounth_order += 1
-    start_date_2 = today - timedelta(days=7)
-    orders_date_2 = Order.objects.filter(created_at__gte=start_date_2)
-    week_sum = 0
-    week_order = 0
-    for item in orders_date_2:
-        if item.state == get_object_or_404(State, id=2):
-            week_sum += item.total_price
-            week_order += 1
-    start_date_3 = today - timedelta(days=1)
-    orders_date_3 = Order.objects.filter(created_at__gte=start_date_3)
-    daily_sum = 0
-    daily_order = 0
-    for item in orders_date_3:
-        if item.state == get_object_or_404(State, id=2):
-            daily_sum += item.total_price
-            daily_order += 1
     order = Order.objects.all().order_by(
         '-created_at'
     )
     order_items = OrderItem.objects.all()
     form = PriceOrderUpdate()
     form_2 = PriceOrderUpdate_2()
+    form_3 = PaymentForm()
     context = {
         'orders': order,
         'order_items': order_items,
         'form': form,
         'form_2': form_2,
-        'mounth_sum':mounth_sum,
-        'mounth_order': mounth_order,
-        'week_sum': week_sum,
-        'week_order': week_order,
-        'daily_sum': daily_sum,
-        'daily_order': daily_order
+        'form_3': form_3,
     }
     return render(request, 'order_list.html', context=context)
 
@@ -78,10 +49,14 @@ def order_search(request):
     orders = Order.objects.all()
     order_items = OrderItem.objects.all()
     form = PriceOrderUpdate()
+    form_2 = PriceOrderUpdate_2()
+    form_3 = PaymentForm()
     context = {
         'search': search,
         'orders': orders,
         'form': form,
+        'form_2': form_2,
+        'form_3': form_3,
         'order_items': order_items,
     }
     return render(request, template_name='order_search.html', context=context)
@@ -116,10 +91,14 @@ def order_reseted(request):
     )
     order_items = OrderItem.objects.all()
     form = PriceOrderUpdate()
+    form_2 = PriceOrderUpdate_2()
+    form_3 = PaymentForm()
     context = {
         'orders': order,
         'order_items': order_items,
         'form': form,
+        'form_2': form_2,
+        'form_3': form_3,
     }
     return render(request, 'order_reseted.html', context=context)
 
@@ -172,6 +151,15 @@ def update_total_price(request, id):
         order.save()
     return redirect('order_list')
 
+def update_payment_method(request, id):
+    order = get_object_or_404(Order, id=id)
+    form = PaymentForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        order.payment_method = cd['payment_method']
+        order.save()
+    return redirect('order_list')
+
 def update_price(request, order_id, order_item_id):
     order = get_object_or_404(Order, id=order_id)
     order_item = get_object_or_404(OrderItem, id=order_item_id)
@@ -184,3 +172,38 @@ def update_price(request, order_id, order_item_id):
         order.total_price -= delta_price
         order.save()
     return redirect('order_list')
+
+
+def sales_statistics(request):
+    form = MonthForm(request.GET or None)
+    selected_month = form.data.get('month', datetime.datetime.now().month)
+    # Получение текущего года
+    current_year = datetime.datetime.now().year
+    # Фильтрация заказов по выбранному месяцу и текущему году
+    orders = Order.objects.filter(created_at__year=current_year, created_at__month=selected_month, state__state__contains = get_object_or_404(State, id=2) )
+    # Инициализация словаря для хранения суммы продаж по дням
+    sales_by_day = {day: 0 for day in range(1, 32)}
+    month_total = 0
+    for order in orders:
+        day = order.created_at.day
+        sales_by_day[day] += order.total_price
+        month_total += order.total_price
+    context = { 'form': form,
+                'sales_by_day': sales_by_day,
+                'month_total': month_total,
+                'current_year': current_year,
+                'selected_month': int(selected_month),
+
+                }
+    return render(request, 'sales_statistics.html', context=context)
+
+def orders_by_day(request, year, month, day):
+    try:
+        orders = get_list_or_404(Order, created_at__year=year, created_at__month=month, created_at__day=day)
+        order_items = OrderItem.objects.all()
+        context = { 'orders': orders,
+                    'order_items': order_items,
+                    'date': datetime.date(year, month, day)}
+        return render(request, 'orders_by_day.html', context=context)
+    except:
+        return redirect('sales_statistics')

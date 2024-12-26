@@ -58,8 +58,8 @@ var sub_subcategoryPanels = document.getElementsByClassName('sub-subcategoryPane
 for (var i = 0; i < sub_subcategoryPanels.length; i++) {
     var sub_subcategoryPanel = sub_subcategoryPanels[i];
     var sub_subcategoryItems = sub_subcategoryPanel.getElementsByClassName('LineInSubCategory');
+    var seen = {};
     for (var j = 0; j < sub_subcategoryItems.length; j++) {
-        var seen = {};
         var sub_item = sub_subcategoryItems[j];
         var sub_text = sub_item.innerText;
         if (seen[sub_text]) {

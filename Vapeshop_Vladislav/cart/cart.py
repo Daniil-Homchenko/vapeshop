@@ -15,10 +15,7 @@ class Cart(object):
             cart = self.session[settings.CART_SESSION_ID] = {}
         try:
             for item in cart:
-                good = get_object_or_404(Goods, id=item)
-                if cart[item]['quantity'] > good.quantity:
-                    cart[item]['quantity'] = int(good.quantity)
-                elif cart[item]['quantity'] == 0:
+                if cart[item]['quantity'] == 0:
                     del cart[item]
         except RuntimeError:
             pass

@@ -11,7 +11,7 @@ from .forms import CartAddProductForm
 def cart_add(request, id):
     cart = Cart(request)
     product = get_object_or_404(models.Goods, id=id)
-    form = CartAddProductForm(request.POST, product_id=id)
+    form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
         cart.add(product=product,

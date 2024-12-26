@@ -1,0 +1,24 @@
+{% extends "base_order.html" %}
+{% block page_content %}
+    {% if user.is_authenticated %}
+    <h1 style="background-color: white; top: 10px; padding: 5px 10px; border-radius: 5px; width: fit-content; position: relative; transform: translate(-50%); left: 50%;">Статистика продаж за месяц</h1>
+    <form  style="background-color: white; top: 10px; padding: 5px 10px; border-radius: 5px; width: fit-content; position: relative; transform: translate(-50%); left: 50%;" method="get">
+        {{ form }}
+        <button type="submit">Показать статистику</button>
+    </form>
+    <table border="1px" style="top: 20px; background-color: white; position: relative; transform: translate(-50%); left: 50%; width: 90%">
+        <tr >
+            {% for day in sales_by_day.keys %}
+                <th style="border: 1px solid black; width: 2%"><a href="{% url 'orders_by_day' year=current_year month=selected_month day=day %}">{{ day }}</a></th>
+            {% endfor %}
+            <th style="border: 1px solid black; width: 2%">Всего</th>
+        </tr>
+        <tr >
+            {% for sale in sales_by_day.values %}
+                <td style="border: 1px solid black">{{ sale }}</td>
+            {% endfor %}
+            <td style="border: 1px solid black">{{ month_total }}</td>
+        </tr>
+    </table>
+    {% endif %}
+{% endblock %}

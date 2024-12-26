@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>SMOKITTY</title>
     <link rel="icon" href="{% static 'icon/favicon.png' %}" type="image/png">
-    <link rel="stylesheet" href="{% static 'css/Style6.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Style11.css' %}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,13 +34,13 @@
                                         {% for goods_ in goods_list.values %}
                                         {% for good_ in goods_ %}
                                         {% if good_.category == categor and good_.line.brand == lin.brand %}
-                                            <li><a href="{% url 'goods:goods_line' good_.line.id %}" class="LineInCategory">{{ good_.line.line }}</a></li>
+                                            <li style="margin: 5px"><a href="{% url 'goods:goods_line' good_.line.id %}" class="LineInSubCategory">{{ good_.line.line }}</a></li>
                                         {% endif %}
                                         {% endfor %}
                                         {% endfor %}
                                     </ul>
                                 {% else %}
-                                    <li><a href="{% url 'goods:goods_line' good.line.id %}" class="LineInCategory">{{ lin.brand }}</a></li>
+                                    <li style="margin: 5px"><a href="{% url 'goods:goods_line' good.line.id %}" class="LineInCategory">{{ lin.brand }}</a></li>
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}
@@ -59,7 +59,7 @@
     <div class="background"></div>
  {% block page_content %}
  {% endblock %}
- <script src="{% static 'JavaS/JSS1.js'%}"></script>
+ <script src="{% static 'JavaS/JSS4.js'%}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

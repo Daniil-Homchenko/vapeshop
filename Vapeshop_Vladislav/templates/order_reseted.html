@@ -6,28 +6,42 @@
         <button type="submit" class="btn btn-primary" style="position: relative; top: 10px; left: 10px">Поиск</button>
     </form>
 
-        <div class="order-list" style="margin: 50px 0 0 0; width: 700px">
+        <div class="order-list" style="position: relative; margin: 50px 0 0 0; width: 90%; transform: translate(-50%); left: 50%;">
             {% for order in orders %}
-            <div class="order" style="width: 650px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 30px; margin: 10px 20px;padding: 10px">
-                <p style="font-family: OCR A Std, monospace; font-size: 30px; font-weight: bolder">Номер заказа #{{order.order_number}} ({{order.state}}):</p>
-                {% for order_item in order_items %}
-                    {% if order_item.order == order %}
-                        <p class="order-product"><img src="{{ order_item.product.image.url }}" style="border-radius: 20px; margin:auto;height:100px;width:100px"> {{order_item.product.line}}-{{order_item.product.taste}}({{order_item.product.stronghold}}) - {{order_item.quantity}} Шт.</p>
-                    {% endif %}
-                {% endfor %}
-                <p>Стоимость заказа - {{order.total_price}}</p>
-                {% if order.state.id == 1 %}
-                    <form action="{% url 'update_price' order.id%}" method="post" style="position: absolute; margin: -40px 0 0 250px">
+            <div class="order" style="width: fit-content; position: relative; transform: translate(-50%); left: 50%; background-color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 30px; margin: 10px 20px;padding: 15px">
+                    <p style="font-family: OCR A Std, monospace; font-size: 30px; font-weight: bolder">Номер заказа #{{order.order_number}} ({{order.state}}):</p>
+                    {% for order_item in order_items %}
+                        {% if order_item.order == order %}
+                            <p class="order-product"><img src="{{ order_item.product.image.url }}" style="border-radius: 20px; margin:auto;height:100px;width:100px"> {{order_item.product.line}}-{{order_item.product.taste}}({{order_item.product.stronghold}}) - {{order_item.quantity}} Шт.</p>
+                            <p class="order-product">Действующая цена: {{ order_item.price }}</p>
+                            <form action="{% url 'update_price' order.id order_item.id%}" method="post" style="display: flex; flex-wrap: wrap; position: relative; margin: -20px 0 0 0; padding: 10px">
+                                <div class="form-group">
+                                {% csrf_token %}
+                                {{ form_2.price }}
+                                <button type="submit" style="border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: white; text-align: center; margin: 0 0 0 5px">Изменить цену</button>
+                            </div>
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+                    <p>Стоимость заказа - {{order.total_price}}</p>
+                    <form action="{% url 'update_total_price' order.id%}" method="post" style="position: absolute; margin: -40px 0 0 250px">
                         <div class="form-group">
                             {% csrf_token %}
                             {{ form.price }}
                             <button type="submit" style="border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: white; text-align: center; margin: 0 0 0 5px">Изменить цену</button>
                         </div>
                     </form>
-                {% endif %}
-                <a href="{%url 'order_complete' order.id%}" class="btn btn-success">Подтвердить</a>
-                <a href="{%url 'order_stop' order.id%}" class="btn btn-danger">Отменить</a>
-            </div>
+                    <p>Способ оплаты - {{order.payment_method}}</p>
+                    <form action="{% url 'update_payment_method' order.id%}" method="post" style="position: absolute; margin: -40px 0 0 250px">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            {{ form_3.payment_method }}
+                            <button type="submit" style="border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: white; text-align: center; margin: 0 0 0 5px">Изменить способ оплаты</button>
+                        </div>
+                    </form>
+                    <a href="{%url 'order_complete' order.id%}" class="btn btn-success">Подтвердить</a>
+                    <a href="{%url 'order_stop' order.id%}" class="btn btn-danger">Отменить</a>
+                </div>
             {% endfor %}
         </div>
     {% endif %}

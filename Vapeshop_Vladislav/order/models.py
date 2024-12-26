@@ -11,6 +11,8 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     products = models.ManyToManyField(Goods, through='OrderItem')
     state = models.ForeignKey('State', default=1, related_name='order', verbose_name='Состояние', help_text='Укажите состояние заказа', on_delete=models.CASCADE)
+    payment_method = models.ForeignKey('Payment_method', related_name='order', verbose_name='Способ оплаты',
+                              help_text='Укажите способ оплаты', on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.order_number:
@@ -24,6 +26,11 @@ class State(models.Model):
     state = CharField(max_length=15)
     def __str__(self):
         return str(self.state)
+
+class Payment_method(models.Model):
+    payment_method = CharField(max_length=15)
+    def __str__(self):
+        return str(self.payment_method)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

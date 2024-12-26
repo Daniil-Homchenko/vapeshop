@@ -97,14 +97,14 @@
 }
 
 .subcategoryPanel {
-    margin-left: 20px;
+    margin-left: 0;
     list-style-type: none;
     padding-left: 0;
 
 }
 
 .sub-subcategoryPanel {
-    margin-left: 20px;
+    margin-left: 0;
     list-style-type: none;
     padding-left: 0;
 
@@ -112,11 +112,12 @@
 
 .LineInCategory{
     border: 2px solid rgb(79, 69, 127);
-    border-radius: 10px;
+    border-radius: 8px;
     text-decoration: none;
     font-family: Gill Sans, sans-serif;
-    color: rgb(48, 29, 138);
-    margin-bottom: 200px;
+    color: rgb(79, 69, 127);
+    margin: 5px 5px 5px 5px;
+    padding: 1px 6px
 }
 
 .search {
